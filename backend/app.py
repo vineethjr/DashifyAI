@@ -14,7 +14,12 @@ def upload_file():
     file = request.files["file"]
 
     # Read Excel file
-    df = pd.read_excel(file)
+    filename = file.filename
+
+    if filename.endswith(".csv"):
+        df = pd.read_csv(file)
+    else:
+        df = pd.read_excel(file)
 
     # Convert first 5 rows to JSON
     data = df.head().to_dict(orient="records")

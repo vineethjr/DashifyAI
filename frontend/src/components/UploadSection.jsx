@@ -19,7 +19,7 @@ function UploadSection({
     >
 
       <h2 className="text-2xl font-semibold mb-6">
-        Upload Excel File
+        Upload Excel or CSV File
       </h2>
 
       <div
@@ -65,7 +65,7 @@ function UploadSection({
 
         <input
           type="file"
-          accept=".xlsx,.xls"
+          accept=".xlsx,.xls,.csv"
           onChange={(e) => setFile(e.target.files[0])}
           className="mb-4"
         />
