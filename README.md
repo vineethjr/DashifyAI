@@ -53,8 +53,6 @@ Download dashboard reports instantly as PDF.
 ## Dashboard Preview
 
 ![Dashboard](screenshots/dashboard.png)
-![Main-Ui](screenshots/ui.png)
-![insights](screenshots/insights and data preview.png)
 ---
 
 # 🛠 Tech Stack
