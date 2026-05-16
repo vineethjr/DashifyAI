@@ -16,17 +16,29 @@ def upload_file():
     # Read Excel file
     filename = file.filename
 
+    # CSV SUPPORT
     if filename.endswith(".csv"):
         df = pd.read_csv(file)
-    else:
-        df = pd.read_excel(file)
+        data = df.to_dict(orient="records")
+        return jsonify({
+            "message": "CSV uploaded successfully",
+            "data": data,
+            "sheets": ["CSV"]
+        })
 
-    # Convert first 5 rows to JSON
-    data = df.head().to_dict(orient="records")
-
+    # EXCEL SUPPORT
+    excel_file = pd.ExcelFile(file)
+    sheet_names = excel_file.sheet_names
+    first_sheet = sheet_names[0]
+    df = pd.read_excel(
+        excel_file,
+        sheet_name=first_sheet
+    )
+    data = df.to_dict(orient="records")
     return jsonify({
-        "message": "File uploaded successfully",
-        "data": data
+        "message": "Excel uploaded successfully",
+        "data": data,
+        "sheets": sheet_names
     })
 
 if __name__ == "__main__":

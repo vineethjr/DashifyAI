@@ -27,6 +27,9 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [loading, setLoading] = useState(false);
   const dashboardRef = useRef();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sheets, setSheets] = useState([]);
+  const [selectedSheet, setSelectedSheet] = useState("");
 
   const handleUpload = async () => {
     setLoading(true);
@@ -47,6 +50,8 @@ function App() {
 
       setMessage(response.data.message);
       setTableData(response.data.data);
+      setSheets(response.data.sheets);
+      setSelectedSheet(response.data.sheets[0]);
 
     } catch (error) {
       console.error(error);
@@ -93,6 +98,13 @@ const insights = generateInsights(
   totalValue,
   averageValue,
   maxValue
+);
+
+const filteredData = tableData.filter((row) =>
+  Object.values(row)
+    .join(" ")
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase())
 );
 
 const downloadPDF = async () => {
@@ -165,10 +177,73 @@ const downloadPDF = async () => {
   loading={loading}
   message={message}
 />
+
+<div
+  className={`
+    ${darkMode ? "bg-[#1e293b]" : "bg-white"}
+    p-4 rounded-2xl shadow-lg mb-10
+  `}
+>
+
+  <input
+    type="text"
+    placeholder="Search data..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="
+      w-full p-3 rounded-xl
+      bg-[#334155]
+      text-white
+      outline-none
+    "
+  />
+
+</div>
+
+{sheets.length > 1 && (
+
+  <div
+    className={`
+      ${darkMode ? "bg-[#1e293b]" : "bg-white"}
+      p-4 rounded-2xl shadow-lg mb-10
+    `}
+  >
+
+    <h2 className="text-xl font-semibold mb-4">
+      Select Sheet
+    </h2>
+
+    <select
+      value={selectedSheet}
+      onChange={(e) =>
+        setSelectedSheet(e.target.value)
+      }
+      className="
+        p-3 rounded-xl
+        bg-[#334155]
+        text-white
+        outline-none
+      "
+    >
+
+      {sheets.map((sheet, index) => (
+
+        <option key={index} value={sheet}>
+          {sheet}
+        </option>
+
+      ))}
+
+    </select>
+
+  </div>
+
+)}
+
     {/* KPI CARDS SECTION */}
   <KPISection
   darkMode={darkMode}
-  tableData={tableData}
+  tableData={filteredData}
   yKey={yKey}
   totalValue={totalValue}
   averageValue={averageValue}
@@ -178,7 +253,7 @@ const downloadPDF = async () => {
       {/* CHART SECTION */}
 <ChartSection
   darkMode={darkMode}
-  tableData={tableData}
+  tableData={filteredData}
   chartType={chartType}
   xKey={xKey}
   yKey={yKey}
@@ -187,14 +262,14 @@ const downloadPDF = async () => {
 {/* AI INSIGHTS */}
 <InsightsSection
   darkMode={darkMode}
-  tableData={tableData}
+  tableData={filteredData}
   insights={insights}
 />
 
       {/* TABLE SECTION */}
      <TableSection
   darkMode={darkMode}
-  tableData={tableData}
+  tableData={filteredData}
 />
 
     </motion.div>
