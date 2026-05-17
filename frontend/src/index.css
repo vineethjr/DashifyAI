@@ -3,10 +3,29 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #0f172a;
-  color: white;
-  font-family: Arial, sans-serif;
+  font-family: Inter, sans-serif;
 }
-* {
-  color-scheme: light;
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070b14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.22);
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: #070b14;
 }

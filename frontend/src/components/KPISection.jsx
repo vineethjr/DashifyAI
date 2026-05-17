@@ -1,99 +1,217 @@
 import { motion } from "framer-motion";
+import CountUp from "react-countup";
+import {
+  FiTrendingUp,
+  FiBarChart2,
+  FiActivity,
+} from "react-icons/fi";
 
 function KPISection({
-  darkMode,
-  tableData,
-  yKey,
-  totalValue,
-  averageValue,
-  maxValue,
+  numericMetrics,
 }) {
+
+  if (
+    !Array.isArray(numericMetrics) ||
+    numericMetrics.length === 0
+  ) {
+    return null;
+  }
+
+  const icons = [
+    <FiTrendingUp />,
+    <FiBarChart2 />,
+    <FiActivity />,
+  ];
+
   return (
-    <>
-      {tableData.length > 0 && (
 
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="
-            grid grid-cols-1 md:grid-cols-4
-            gap-6 mb-10
-          "
-        >
+    <div
+      className="
+        grid grid-cols-1
+        md:grid-cols-2
+        xl:grid-cols-3
+        gap-6
+        mt-10
+      "
+    >
 
-          {/* TOTAL ROWS */}
-          <div
-            className={`
-              ${darkMode ? "bg-[#1e293b]" : "bg-white"}
-              p-6 rounded-2xl shadow-lg
-              hover:scale-105 transition duration-300
-            `}
+      {numericMetrics.map(
+        (metric, index) => (
+
+          <motion.div
+
+            key={index}
+
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+
+            transition={{
+              delay: index * 0.08,
+            }}
+
+            whileHover={{
+              y: -6,
+            }}
+
+            className="
+              relative overflow-hidden
+              rounded-[32px]
+              border border-white/10
+              bg-white/[0.03]
+              backdrop-blur-2xl
+              p-7
+              shadow-[0_10px_50px_rgba(0,0,0,0.25)]
+              hover:border-cyan-400/20
+              hover:shadow-[0_20px_70px_rgba(6,182,212,0.12)]
+              transition-all duration-300
+            "
           >
-            <h3 className="text-slate-400">
-              Total Rows
-            </h3>
 
-            <p className="text-3xl font-bold mt-2">
-              {tableData.length}
-            </p>
-          </div>
+            {/* GLOW */}
+            <div
+              className="
+                absolute top-0 right-0
+                w-40 h-40
+                bg-cyan-500/10
+                blur-3xl rounded-full
+              "
+            />
 
-          {/* TOTAL VALUE */}
-          <div
-            className={`
-              ${darkMode ? "bg-[#1e293b]" : "bg-white"}
-              p-6 rounded-2xl shadow-lg
-              hover:scale-105 transition duration-300
-            `}
-          >
-            <h3 className="text-slate-400">
-              Total {yKey}
-            </h3>
+            {/* TOP */}
+            <div
+              className="
+                relative z-10
+                flex items-center
+                justify-between
+              "
+            >
 
-            <p className="text-3xl font-bold mt-2 text-blue-400">
-              {totalValue}
-            </p>
-          </div>
+              <div>
 
-          {/* AVERAGE */}
-          <div
-            className={`
-              ${darkMode ? "bg-[#1e293b]" : "bg-white"}
-              p-6 rounded-2xl shadow-lg
-              hover:scale-105 transition duration-300
-            `}
-          >
-            <h3 className="text-slate-400">
-              Average {yKey}
-            </h3>
+                <p
+                  className="
+                    text-xs uppercase
+                    tracking-[0.25em]
+                    text-slate-500
+                    font-medium
+                  "
+                >
+                  {metric.yKey}
+                </p>
 
-            <p className="text-3xl font-bold mt-2 text-green-400">
-              {averageValue}
-            </p>
-          </div>
+                <h2
+                  className="
+                    mt-5
+                    text-5xl
+                    font-bold
+                    tracking-tight
+                  "
+                >
+                  <CountUp
+  end={Number(metric.total || 0)}
+  duration={2}
+  separator=","
+/>
+                </h2>
 
-          {/* MAX VALUE */}
-          <div
-            className={`
-              ${darkMode ? "bg-[#1e293b]" : "bg-white"}
-              p-6 rounded-2xl shadow-lg
-              hover:scale-105 transition duration-300
-            `}
-          >
-            <h3 className="text-slate-400">
-              Highest {yKey}
-            </h3>
+              </div>
 
-            <p className="text-3xl font-bold mt-2 text-yellow-400">
-              {maxValue}
-            </p>
-          </div>
+              <div
+                className="
+                  w-16 h-16
+                  rounded-3xl
+                  bg-cyan-500/10
+                  border border-cyan-400/20
+                  flex items-center
+                  justify-center
+                  text-cyan-300
+                  text-2xl
+                "
+              >
+                {
+                  icons[
+                    index % icons.length
+                  ]
+                }
+              </div>
 
-        </motion.div>
+            </div>
 
+            {/* BOTTOM */}
+            <div
+              className="
+                relative z-10
+                mt-8
+                flex items-center
+                justify-between
+              "
+            >
+
+              <div>
+
+                <p
+                  className="
+                    text-slate-500 text-sm
+                  "
+                >
+                  Average
+                </p>
+
+                <h3
+                  className="
+                    mt-1 text-xl
+                    font-semibold
+                  "
+                >
+                  <CountUp
+  end={Number(metric.average || 0)}
+  duration={2}
+  decimals={2}
+/>
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p
+                  className="
+                    text-slate-500 text-sm
+                  "
+                >
+                  Peak
+                </p>
+
+                <h3
+                  className="
+                    mt-1 text-xl
+                    font-semibold
+                  "
+                >
+                  <CountUp
+  end={Number(metric.max || 0)}
+  duration={2}
+  separator=","
+/>
+                </h3>
+
+              </div>
+
+            </div>
+
+          </motion.div>
+
+        )
       )}
-    </>
+
+    </div>
   );
 }
 
