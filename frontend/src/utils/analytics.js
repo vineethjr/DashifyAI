@@ -159,44 +159,73 @@ export const generateInsights = (
 
   if (
     !Array.isArray(data) ||
-    data.length === 0 ||
-    !xKey ||
-    !yKey
+    data.length === 0
   ) {
     return [];
   }
 
   const insights = [];
 
-  insights.push(
-    `The dataset contains ${data.length} total records.`
-  );
-
-  insights.push(
-    `The total ${yKey} is ${Number(total).toLocaleString()}.`
-  );
-
-  insights.push(
-    `The average ${yKey} is ${Number(average).toFixed(2)}.`
-  );
-
-  insights.push(
-    `The highest ${yKey} recorded is ${Number(max).toLocaleString()}.`
-  );
-
-  const topItem = [...data].sort(
+  const sorted = [...data].sort(
     (a, b) =>
       Number(b[yKey] || 0) -
       Number(a[yKey] || 0)
-  )[0];
+  );
 
-  if (topItem) {
+  const top = sorted[0];
+
+  const bottom =
+    sorted[sorted.length - 1];
+
+  // OVERVIEW
+  insights.push(
+    `The dataset demonstrates a cumulative ${yKey.toLowerCase()} performance of ${Number(total).toLocaleString()}, with an average contribution of ${Number(average).toFixed(2)} per record.`
+  );
+
+  // TOP PERFORMER
+  if (top) {
 
     insights.push(
-      `${topItem[xKey]} has the highest ${yKey} value at ${topItem[yKey]}.`
+      `${top[xKey]} emerged as the strongest-performing category, achieving the highest ${yKey.toLowerCase()} value of ${Number(top[yKey]).toLocaleString()}.`
     );
 
   }
 
+  // LOWEST
+  if (bottom) {
+
+    insights.push(
+      `${bottom[xKey]} recorded the lowest ${yKey.toLowerCase()} contribution, indicating potential optimization opportunities within this segment.`
+    );
+
+  }
+
+  // PERFORMANCE DISTRIBUTION
+  if (max > average * 1.5) {
+
+    insights.push(
+      `The analysis indicates a concentrated performance distribution, where high-performing categories significantly outperform the overall dataset average.`
+    );
+
+  } else {
+
+    insights.push(
+      `Performance distribution across the dataset appears relatively balanced, suggesting operational consistency among categories.`
+    );
+
+  }
+
+  // DATA QUALITY
+  insights.push(
+    `The uploaded dataset was successfully processed and visualized through the DashifyAI analytics engine, enabling automated KPI evaluation and trend interpretation.`
+  );
+
+  // RECOMMENDATION
+  insights.push(
+    `Strategic focus should be directed toward scaling high-performing segments while investigating underperforming areas for potential efficiency improvements.`
+  );
+
   return insights;
+
 };
+

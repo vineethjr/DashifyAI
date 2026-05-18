@@ -12,6 +12,8 @@ import {
   CartesianGrid,
   Legend,
   ResponsiveContainer,
+  AreaChart,
+  Area,
 } from "recharts";
 
 import { motion } from "framer-motion";
@@ -22,40 +24,48 @@ function ChartSection({
   chartType,
   xKey,
   yKey,
+  handleChartTypeChange,
 }) {
 
   const hasData =
     Array.isArray(tableData) &&
     tableData.length > 0;
 
-  const validKeys = xKey && yKey;
-  const COLORS = [
-  "#3B82F6",
-  "#06B6D4",
-  "#8B5CF6",
-  "#14B8A6",
-  "#F59E0B",
-  "#EF4444",
-];
-
   if (!hasData) {
+
     return (
       <div
-        className={`
-          ${
-            darkMode
-              ? "bg-[#1e293b]"
-              : "bg-white"
-          }
-          p-6 rounded-2xl
-          shadow-lg mb-10
-          text-slate-300
-        `}
+        className="
+          mt-10
+          rounded-[28px]
+          border border-white/10
+          bg-white/[0.03]
+          backdrop-blur-xl
+          p-6
+          text-slate-400
+        "
       >
         No chart data available.
       </div>
     );
+
   }
+
+  const chartData = tableData.map(
+    (item) => ({
+      ...item,
+      [yKey]: Number(item[yKey]) || 0,
+    })
+  );
+
+  const COLORS = [
+    "#3B82F6",
+    "#06B6D4",
+    "#8B5CF6",
+    "#14B8A6",
+    "#F59E0B",
+    "#EF4444",
+  ];
 
   return (
 
@@ -78,368 +88,244 @@ function ChartSection({
       className="
         relative overflow-hidden
         rounded-[32px]
-        border border-white/10 hover:border-cyan-400/20
+        border border-white/10
         bg-white/[0.03]
         backdrop-blur-2xl
         p-8
         shadow-[0_10px_50px_rgba(0,0,0,0.25)]
-        hover:shadow-[0_20px_70px_rgba(0,0,0,0.35)]
-        transition-all duration-300
         mt-10
       "
     >
 
       {/* HEADER */}
-      <div className="mb-8">
-
-        <h2
-          className="
-            text-2xl font-semibold
-            tracking-tight
-          "
-        >
-          Analytics Visualization
-        </h2>
-
-        <p
-          className="
-            mt-2 text-slate-400
-          "
-        >
-          AI-generated visual insights
-          from your uploaded dataset.
-        </p>
-
-      </div>
-
-      {/* TOP BAR */}
       <div
         className="
-          flex justify-between
-          items-center mb-6
+          flex flex-wrap
+          items-center
+          justify-between
+          gap-4
+          mb-8
         "
       >
 
-        <h2 className="text-2xl font-semibold">
-          Smart Dashboard Chart: {yKey}
-        </h2>
+        <div>
 
-        <span
+          <h2
+            className="
+              text-2xl
+              font-semibold
+            "
+          >
+            Smart Dashboard Chart
+          </h2>
+
+          <p
+            className="
+              mt-2
+              text-slate-400
+            "
+          >
+            Dynamic visualization for {yKey}
+          </p>
+
+        </div>
+
+        {/* CHART SWITCHER */}
+        <select
+
+          value={chartType}
+
+          onChange={(e) =>
+            handleChartTypeChange(
+              yKey,
+              e.target.value
+            )
+          }
+
           className="
-            bg-blue-600
-            px-4 py-2
-            rounded-xl
-            text-sm font-medium
+            rounded-2xl
+            border border-white/10
+            bg-[#0f172a]
+            px-5 py-3
+            text-sm
+            outline-none
+            transition
+            hover:border-cyan-400/30
           "
         >
-          {chartType?.toUpperCase?.() || "BAR"} CHART
-        </span>
+
+          <option value="bar">
+            Bar Chart
+          </option>
+
+          <option value="line">
+            Line Chart
+          </option>
+
+          <option value="pie">
+            Pie Chart
+          </option>
+
+          <option value="area">
+            Area Chart
+          </option>
+
+        </select>
 
       </div>
 
-      {!validKeys ? (
+      {/* CHART */}
+      <div
+        className="
+          rounded-[24px]
+          border border-white/5
+          bg-black/10
+          p-6
+          h-[500px]
+        "
+      >
 
-        <div className="text-slate-300">
-          Chart unavailable:
-          missing or invalid data keys.
-        </div>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
 
-      ) : (
+          {chartType === "bar" ? (
 
-        <div
-  className="
-    rounded-[24px]
-    border border-white/5
-    bg-black/10
-    p-8
-    grid grid-cols-1
-    lg:grid-cols-3
-    gap-8
-    items-center
-  "
->
-<div className="lg:col-span-2">
-          <ResponsiveContainer
-  width="70%"
-  height={420}
->
+            <BarChart data={chartData}>
 
-            {chartType === "bar" ? (
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#334155"
+              />
 
-              <BarChart data={tableData}>
+              <XAxis
+                dataKey={xKey}
+                stroke="#94A3B8"
+              />
 
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="rgba(255,255,255,0.08)"
-                />
+              <YAxis stroke="#94A3B8" />
 
-                <XAxis
-                  dataKey={xKey}
-                  stroke="#94a3b8"
-tickLine={false}
-axisLine={false}
-                />
+              <Tooltip />
 
-                <YAxis
-                   stroke="#94a3b8"
-  tickLine={false}
-  axisLine={false}
-                />
+              <Legend />
 
-                <Tooltip
-                  contentStyle={{
-                    background: "#0f172a",
-                    border:
-                      "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: "16px",
-                    color: "white",
-                  }}
-                />
+              <Bar
+                dataKey={yKey}
+                fill="#3B82F6"
+                radius={[8, 8, 0, 0]}
+              />
 
-                <Legend />
+            </BarChart>
 
-                <Bar
-  dataKey={yKey}
-  radius={[12, 12, 0, 0]}
-  fill="#3B82F6"
-/>
+          ) : chartType === "line" ? (
 
-              </BarChart>
+            <LineChart data={chartData}>
 
-            ) : chartType === "line" ? (
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#334155"
+              />
 
-              <LineChart data={tableData}>
+              <XAxis
+                dataKey={xKey}
+                stroke="#94A3B8"
+              />
 
-                <CartesianGrid
-  strokeDasharray="3 3"
-  stroke="rgba(255,255,255,0.06)"
-/>
+              <YAxis stroke="#94A3B8" />
 
-                <XAxis
-                  dataKey={xKey}
-                   stroke="#94a3b8"
-tickLine={false}
-axisLine={false}
-                />
+              <Tooltip />
 
-                <YAxis
-                  stroke="#94a3b8"
-  tickLine={false}
-  axisLine={false}
-                />
+              <Legend />
 
-                <Tooltip
-                  contentStyle={{
-                    background: "#0f172a",
-                    border:
-                      "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: "16px",
-                    color: "white",
-                  }}
-                />
+              <Line
+                type="monotone"
+                dataKey={yKey}
+                stroke="#06B6D4"
+                strokeWidth={3}
+              />
 
-                <Legend />
+            </LineChart>
 
-                <Line
-  type="monotone"
-  dataKey={yKey}
-  stroke="#06B6D4"
-  strokeWidth={4}
-  dot={{
-    r: 4,
-    fill: "#06B6D4",
-  }}
-  activeDot={{
-    r: 7,
-  }}
-/>
+          ) : chartType === "area" ? (
 
-              </LineChart>
+            <AreaChart data={chartData}>
 
-            ) : (
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#334155"
+              />
 
-              <PieChart>
+              <XAxis
+                dataKey={xKey}
+                stroke="#94A3B8"
+              />
 
-                <Pie
-                  data={tableData}
-                  dataKey={yKey}
-                  nameKey={xKey}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={130}
-                  innerRadius={95}
-                  paddingAngle={4}
-                >
+              <YAxis stroke="#94A3B8" />
 
-                  {tableData.map(
-                    (entry, index) => (
+              <Tooltip />
 
-                      <Cell
-                        fill={COLORS[index % COLORS.length]}
-                      />
+              <Legend />
 
-                    )
-                  )}
+              <Area
+                type="monotone"
+                dataKey={yKey}
+                stroke="#8B5CF6"
+                fill="#8B5CF6"
+                fillOpacity={0.3}
+              />
 
-                </Pie>
+            </AreaChart>
 
-                <Tooltip
-                  contentStyle={{
-                    background: "#0f172a",
-                    border:
-                      "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: "16px",
-                    color: "white",
-                  }}
-                />
+          ) : (
 
-                <Legend
-                  verticalAlign="bottom"
-                  iconType="circle"
-                />
+            <PieChart>
 
-              </PieChart>
+              <Pie
+                data={chartData}
+                dataKey={yKey}
+                nameKey={xKey}
+                cx="50%"
+                cy="50%"
+                outerRadius={170}
+                innerRadius={80}
+                paddingAngle={3}
+              >
 
-            )}
+                {chartData.map(
+                  (_, index) => (
 
-          </ResponsiveContainer>
-</div>
-<div
-  className="
-    space-y-5
-  "
->
+                    <Cell
+                      key={index}
+                      fill={
+                        COLORS[
+                          index %
+                            COLORS.length
+                        ]
+                      }
+                    />
 
-  {/* CARD */}
-  <div
-    className="
-      relative overflow-hidden
-rounded-3xl
-border border-white/10
-bg-gradient-to-br
-from-white/[0.06]
-to-white/[0.02]
-p-6
-backdrop-blur-xl
-transition-all duration-300
-hover:-translate-y-1
-hover:border-cyan-400/20
-hover:shadow-[0_10px_40px_rgba(6,182,212,0.15)]
-    "
-  >
-    <div
-  className="
-    absolute top-0 right-0
-    w-24 h-24
-    bg-cyan-500/10
-    blur-3xl rounded-full
-  "
-/>
-    <p className="text-slate-500
-uppercase tracking-[0.2em]
-text-xs font-medium">
-      Total Records
-    </p>
+                  )
+                )}
 
-    <h2
-      className="
-        mt-2 text-4xl tracking-tight
-        font-semibold
-      "
-    >
-      {tableData.length}
-    </h2>
-  </div>
+              </Pie>
 
-  {/* CARD */}
-  <div
-    className="
-      relative overflow-hidden
-rounded-3xl
-border border-white/10
-bg-gradient-to-br
-from-white/[0.06]
-to-white/[0.02]
-p-6
-backdrop-blur-xl
-transition-all duration-300
-hover:-translate-y-1
-hover:border-cyan-400/20
-hover:shadow-[0_10px_40px_rgba(6,182,212,0.15)]
-    "
-  >
-    <div
-  className="
-    absolute top-0 right-0
-    w-24 h-24
-    bg-cyan-500/10
-    blur-3xl rounded-full
-  "
-/>
-    <p className="text-slate-500
-uppercase tracking-[0.2em]
-text-xs font-medium">
-      Chart Type
-    </p>
+              <Tooltip />
 
-    <h2
-      className="
-        mt-2 text-2xl
-        font-semibold capitalize
-      "
-    >
-      {chartType}
-    </h2>
-  </div>
+              <Legend />
 
-  {/* CARD */}
-  <div
-    className="
-      relative overflow-hidden
-rounded-3xl
-border border-white/10
-bg-gradient-to-br
-from-white/[0.06]
-to-white/[0.02]
-p-6
-backdrop-blur-xl
-transition-all duration-300
-hover:-translate-y-1
-hover:border-cyan-400/20
-hover:shadow-[0_10px_40px_rgba(6,182,212,0.15)]
-    "
-  >
-    <div
-  className="
-    absolute top-0 right-0
-    w-24 h-24
-    bg-cyan-500/10
-    blur-3xl rounded-full
-  "
-/>
-    <p className="text-slate-500
-uppercase tracking-[0.2em]
-text-xs font-medium">
-      Primary Metric
-    </p>
+            </PieChart>
 
-    <h2
-      className="
-        mt-2 text-2xl
-        font-semibold
-      "
-    >
-      {yKey}
-    </h2>
-  </div>
+          )}
 
-</div>
-        </div>
+        </ResponsiveContainer>
 
-      )}
+      </div>
 
     </motion.div>
+
   );
+
 }
 
 export default ChartSection;

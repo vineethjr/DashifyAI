@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 function TableSection({
   darkMode,
   tableData,
+  handleCellChange,
 }) {
 
   const hasData =
@@ -51,7 +52,8 @@ function TableSection({
       className="
         mt-10
         rounded-[32px]
-        border border-white/10 hover:border-cyan-400/20
+        border border-white/10
+        hover:border-cyan-400/20
         bg-white/[0.03]
         backdrop-blur-2xl
         overflow-hidden
@@ -66,25 +68,66 @@ function TableSection({
         className="
           px-8 py-6
           border-b border-white/5
+          flex items-center
+          justify-between
+          gap-4
+          flex-wrap
         "
       >
 
-        <h2
-          className="
-            text-2xl font-semibold
-          "
-        >
-          Dataset Preview
-        </h2>
+        <div>
 
-        <p
+          <h2
+            className="
+              text-2xl font-semibold
+            "
+          >
+            Interactive Dataset Editor
+          </h2>
+
+          <p
+            className="
+              mt-2 text-slate-400
+            "
+          >
+            Edit values in realtime and
+            watch dashboard analytics
+            update instantly.
+          </p>
+
+        </div>
+
+        {/* LIVE BADGE */}
+        <div
           className="
-            mt-2 text-slate-400
+            flex items-center gap-3
+            rounded-2xl
+            border border-emerald-400/20
+            bg-emerald-500/10
+            px-4 py-2
           "
         >
-          Interactive preview of your
-          uploaded dataset.
-        </p>
+
+          <div
+            className="
+              w-2.5 h-2.5
+              rounded-full
+              bg-emerald-400
+              animate-pulse
+            "
+          />
+
+          <span
+            className="
+              text-sm
+              text-emerald-300
+              font-medium
+            "
+          >
+            Live Sync Enabled
+          </span>
+
+        </div>
 
       </div>
 
@@ -92,7 +135,7 @@ function TableSection({
       <div
         className="
           overflow-x-auto
-          max-h-[600px]
+          max-h-[650px]
         "
       >
 
@@ -161,14 +204,46 @@ function TableSection({
                     <td
                       key={col}
                       className="
-                        px-6 py-4
-                        text-sm text-slate-300
-                        whitespace-nowrap
+                        px-4 py-3
+                        min-w-[160px]
                       "
                     >
-                      {String(
-                        row[col] ?? "-"
-                      )}
+
+                      <input
+
+                        type="text"
+
+                        value={
+                          row[col] ?? ""
+                        }
+
+                        onChange={(e) =>
+                          handleCellChange(
+                            rowIndex,
+                            col,
+                            e.target.value
+                          )
+                        }
+
+                        className="
+                          w-full
+                          rounded-xl
+                          border border-transparent
+                          bg-white/[0.03]
+                          px-4 py-3
+                          text-sm
+                          text-slate-200
+                          outline-none
+                          transition-all duration-200
+
+                          hover:bg-white/[0.05]
+
+                          focus:border-cyan-400/30
+                          focus:bg-cyan-500/[0.05]
+                          focus:shadow-[0_0_0_4px_rgba(6,182,212,0.08)]
+                        "
+                      />
+
                     </td>
 
                   ))}
