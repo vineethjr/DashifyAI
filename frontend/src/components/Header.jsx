@@ -3,6 +3,9 @@ import {
   FiSun,
   FiDownload,
   FiActivity,
+  FiPlus,
+  FiGrid,
+  FiFileText,
 } from "react-icons/fi";
 
 import { motion } from "framer-motion";
@@ -11,6 +14,9 @@ function Header({
   darkMode,
   setDarkMode,
   downloadPDF,
+  handleAddRow,
+  handleAddColumn,
+  exportEditedExcel,
 }) {
 
   return (
@@ -33,7 +39,7 @@ function Header({
         border border-white/10
         bg-white/[0.03]
         backdrop-blur-2xl
-        px-8 py-6
+        px-8 py-5
         shadow-[0_10px_50px_rgba(0,0,0,0.25)]
       "
     >
@@ -52,24 +58,23 @@ function Header({
         className="
           relative z-10
           flex flex-col
-          lg:flex-row
-          lg:items-center
-          lg:justify-between
-          gap-8
+          xl:flex-row
+          xl:items-center
+          xl:justify-between
+          gap-6
         "
       >
 
         {/* LEFT */}
         <div>
 
-          {/* LOGO */}
           <div
             className="
               flex items-center gap-4
             "
           >
 
-            {/* ICON */}
+            {/* LOGO */}
             <div
               className="
                 relative
@@ -110,7 +115,7 @@ function Header({
 
               <h1
                 className="
-                  text-5xl
+                  text-4xl
                   font-black
                   tracking-tight
                   bg-gradient-to-r
@@ -144,7 +149,7 @@ function Header({
                     tracking-wide
                   "
                 >
-                  AI-Powered Analytics Platform
+                  Realtime AI Analytics Platform
                 </p>
 
               </div>
@@ -158,8 +163,10 @@ function Header({
         {/* RIGHT */}
         <div
           className="
-            flex items-center
-            gap-4
+            flex flex-wrap
+            items-center
+            justify-end
+            gap-3
           "
         >
 
@@ -191,16 +198,98 @@ function Header({
                 font-medium
               "
             >
-              System Active
+              Live Analytics Active
             </span>
 
           </div>
 
+          {/* ADD ROW */}
+          <button
+
+            onClick={handleAddRow}
+
+            className="
+              flex items-center
+              gap-2
+              rounded-2xl
+              border border-white/10
+              bg-white/[0.04]
+              px-5 py-3
+              text-sm font-medium
+              hover:border-cyan-400/20
+              hover:bg-cyan-500/10
+              transition-all duration-300
+            "
+          >
+
+            <FiPlus />
+
+            <span>
+              Add Row
+            </span>
+
+          </button>
+
+          {/* ADD COLUMN */}
+          <button
+
+            onClick={handleAddColumn}
+
+            className="
+              flex items-center
+              gap-2
+              rounded-2xl
+              border border-white/10
+              bg-white/[0.04]
+              px-5 py-3
+              text-sm font-medium
+              hover:border-violet-400/20
+              hover:bg-violet-500/10
+              transition-all duration-300
+            "
+          >
+
+            <FiGrid />
+
+            <span>
+              Add Column
+            </span>
+
+          </button>
+
+          {/* EXPORT EXCEL */}
+          <button
+
+            onClick={exportEditedExcel}
+
+            className="
+              flex items-center
+              gap-2
+              rounded-2xl
+              border border-white/10
+              bg-emerald-500/10
+              px-5 py-3
+              text-sm font-medium
+              hover:bg-emerald-500/20
+              transition-all duration-300
+            "
+          >
+
+            <FiFileText />
+
+            <span>
+              Export Excel
+            </span>
+
+          </button>
+
           {/* THEME */}
           <button
+
             onClick={() =>
               setDarkMode(!darkMode)
             }
+
             className="
               w-14 h-14
               rounded-2xl
@@ -223,14 +312,16 @@ function Header({
 
           </button>
 
-          {/* EXPORT */}
+          {/* EXPORT REPORT */}
           <button
+
             onClick={downloadPDF}
+
             className="
               group
               relative overflow-hidden
               rounded-2xl
-              px-8 py-4
+              px-7 py-4
               bg-gradient-to-r
               from-cyan-500
               via-blue-500
@@ -276,7 +367,9 @@ function Header({
       </div>
 
     </motion.div>
+
   );
+
 }
 
 export default Header;

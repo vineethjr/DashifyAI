@@ -9,6 +9,8 @@ import Toast from "./components/Toast";
 import LoadingSkeleton from "./components/LoadingSkeleton";
 import AnimatedBackground from "./components/AnimatedBackground";
 import AIIntro from "./components/AIIntro";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 import {
   getChartType,
@@ -586,6 +588,92 @@ function App() {
     );
 
   };
+  const handleAddRow = () => {
+
+  if (!tableData.length) return;
+
+  const emptyRow = {};
+
+  Object.keys(tableData[0]).forEach(
+    (key) => {
+      emptyRow[key] = "";
+    }
+  );
+
+  setTableData([
+    ...tableData,
+    emptyRow,
+  ]);
+
+  showToast(
+    "New row added",
+    "success"
+  );
+
+};
+const handleAddColumn = () => {
+
+  const columnName = prompt(
+    "Enter new column name"
+  );
+
+  if (!columnName) return;
+
+  const updatedData =
+    tableData.map((row) => ({
+      ...row,
+      [columnName]: "",
+    }));
+
+  setTableData(updatedData);
+
+  showToast(
+    "New column added",
+    "success"
+  );
+
+};
+const exportEditedExcel = () => {
+
+  const worksheet =
+    XLSX.utils.json_to_sheet(
+      tableData
+    );
+
+  const workbook =
+    XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Edited_Data"
+  );
+
+  const excelBuffer =
+    XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+  const blob = new Blob(
+    [excelBuffer],
+    {
+      type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    }
+  );
+
+  saveAs(
+    blob,
+    "DashifyAI_Edited.xlsx"
+  );
+
+  showToast(
+    "Edited Excel exported",
+    "success"
+  );
+
+};
 
   return (
 
@@ -642,10 +730,13 @@ function App() {
         <div className="space-y-8">
 
           <Header
-            darkMode={darkMode}
-            setDarkMode={setDarkMode}
-            downloadPDF={downloadPDF}
-          />
+  darkMode={darkMode}
+  setDarkMode={setDarkMode}
+  downloadPDF={downloadPDF}
+  handleAddRow={handleAddRow}
+  handleAddColumn={handleAddColumn}
+  exportEditedExcel={exportEditedExcel}
+/>
 
           <AIIntro />
 
