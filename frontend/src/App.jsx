@@ -927,6 +927,23 @@ const exportEditedExcel = () => {
         )}
 
         <Toast toast={toast} />
+        {/* FOOTER */}
+<footer
+  className="
+    mt-16
+    border-t border-white/5
+    py-8
+    text-center
+    text-sm
+    text-slate-500
+  "
+>
+
+  <p>
+    © 2026 All Rights Reserved — VJR Associates
+  </p>
+
+</footer>
 
       </div>
 
